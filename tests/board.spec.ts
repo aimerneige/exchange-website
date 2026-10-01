@@ -193,15 +193,24 @@ test('all bundled character images are available before opening the editor offli
     images.length === 6 && images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0),
   )).toBe(true);
   await page.locator('mdui-button-icon[aria-label="添加可换出商品"]').click();
-  const checkCharacters = async (group: string) => {
-    await expect.poll(() => page.locator('.character-picker img').evaluateAll((images, group) =>
-      images.length === 9 && images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0 && (image as HTMLImageElement).src.includes(`/characters/${group}/`)),
-      group,
+  const checkCharacters = async (group: string, count = 9) => {
+    await expect.poll(() => page.locator('.character-picker img').evaluateAll((images, args) =>
+      images.length === args.count && images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0 && (image as HTMLImageElement).src.includes(`/characters/${args.group}/`)),
+      { group, count },
     )).toBe(true);
   };
-  await checkCharacters('muse');
+  await checkCharacters('muse', 9);
   await page.locator('mdui-chip').filter({ hasText: 'Aqours' }).click();
-  await checkCharacters('aqours');
+  await checkCharacters('aqours', 9);
+  await page.locator('mdui-chip').filter({ hasText: '虹ヶ咲' }).click();
+  await checkCharacters('nijigasaki', 13);
+  await page.locator('mdui-chip').filter({ hasText: 'Liella!' }).click();
+  await checkCharacters('liella', 11);
+  await page.locator('mdui-chip').filter({ hasText: '蓮ノ空' }).click();
+  await checkCharacters('hasunosora', 11);
+  await page.locator('mdui-chip').filter({ hasText: 'イキヅライブ！' }).click();
+  await checkCharacters('ikizulive', 10);
+  await page.locator('mdui-chip').filter({ hasText: 'Aqours' }).click();
   await page.getByRole('button', { name: '选择 高海千歌', exact: true }).click();
   await button(page, '保存 / 保存 / Save').click();
   await expect(page.locator('mdui-dialog')).toHaveCount(0);

@@ -67,7 +67,7 @@ Service Worker 需要 HTTPS，localhost 可用于测试。更新部署后，关�
 
 将新增图片放入对应的 `public/characters/` 目录，使用以 `./characters/` 开头的相对地址。重新构建后，编辑器、团体筛选和 Service Worker 的预缓存图片清单会自动读取此配置。图片内容变化也会更新离线缓存版本；缺少配置中的文件会导致构建失败，避免发布不完整资源。无需改变页面组件。默认角色名称允许修改，用户也可上传其他 IP 的照片并自行填写名称。
 
-默认角色图从素材包提取，保留原始尺寸与文件名，排除 `__MACOSX` 元数据。文件路径为 `public/characters/muse/member01.png` 至 `member09.png`，以及 `public/characters/aqours/u01.webp` 至 `u09.webp`，按用户提供的顺序对应角色。
+默认角色图从 LoveLive! 官方网站抓取提取，统一使用高分辨率 WebP 格式（640×840），保留原始命名与透明通道。包含 μ’s (`public/characters/muse/o01.webp` ～ `o09.webp`)、Aqours (`public/characters/aqours/u01.webp` ～ `u09.webp`)、虹ヶ咲 (`public/characters/nijigasaki/n01.webp` ～ `n13.webp`)、Liella! (`public/characters/liella/y01.webp` ～ `y11.webp`)、蓮ノ空 (`public/characters/hasunosora/h01.webp` ～ `h11.webp`) 以及 イキヅライブ！ (`public/characters/ikizulive/bb01.webp` ～ `bb10.webp`)。
 
 图片原始来源为 LoveLive! 官方网站。角色图只表示角色，不代表具体商品。版权归各自权利人所有，非官方声明不等于素材授权。页面加载默认图时只请求本站资源。
 
@@ -77,7 +77,7 @@ Service Worker 需要 HTTPS，localhost 可用于测试。更新部署后，关�
 
 交换板仅属于当前浏览器、当前站点源。清除网站数据、隐私模式关闭、浏览器存储回收或换设备可能丢失数据；更换域名也不会自动迁移本地数据。此 MVP 没有备份与导入导出功能。
 
-默认角色图片随应用壳一次性预缓存，完成后首次离线打开编辑器也可查看两个团体的全部角色。离线使用依赖缓存成功安装及可用的浏览器存储；请首次保持联网，直到页面显示「已支持离线使用」。新版 Service Worker 激活时会清理旧版应用壳与旧外链图片缓存。
+默认角色图片随应用壳一次性预缓存，完成后首次离线打开编辑器也可查看全部团体的完整角色。离线使用依赖缓存成功安装及可用的浏览器存储；请首次保持联网，直到页面显示「已支持离线使用」。新版 Service Worker 激活时会清理旧版应用壳缓存。
 
 ## 浏览器验证
 
