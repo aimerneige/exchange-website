@@ -7,6 +7,7 @@ import type { TradeItem } from './types';
 import Icon from './components/Icon';
 import ItemCard from './components/ItemCard';
 import ItemEditor from './components/ItemEditor';
+import QuickAdd from './components/QuickAdd';
 import ItemImage from './components/ItemImage';
 import Modal from './components/Modal';
 import { IconButton } from './components/AccessibleControls';
@@ -31,6 +32,7 @@ export default function App() {
   const [groupFilter, setGroupFilter] = useState('all');
   const [hideTraded, setHideTraded] = useState(false);
   const [editor, setEditor] = useState<{ item?: TradeItem; type: TradeItem['type'] }>();
+  const [quickAddType, setQuickAddType] = useState<TradeItem['type']>();
   const [previewId, setPreviewId] = useState<string>();
   const [deleteId, setDeleteId] = useState<string>();
   const [guide, setGuide] = useState(false);
@@ -148,6 +150,7 @@ export default function App() {
       catch { setNotice('请使用浏览器退出全屏 / Exit fullscreen using your browser.'); }
     }
     setDisplay(false);
+    setQuickAddType(undefined);
   }
 
   async function fullscreen() {
@@ -183,7 +186,8 @@ export default function App() {
       {error && <div className="error-banner" role="alert"><Icon name="info" /><span>{error}</span><IconButton aria-label="关闭错误提示" onClick={() => setError('')}><Icon name="close" size={18} /></IconButton></div>}
       {!display && <div className="board-toolbar"><div className="board-heading"><h2>我的交换板{demo && <span className="demo-tag">示例预览</span>}</h2><p>譲りたいもの、探しているもの。 <span>Your trade wishlist, at a glance.</span></p></div><div className="board-filters"><label className="filter-switch"><mdui-switch ref={switchRef} checked={hideTraded} aria-label="隐藏已交换" /><span>隐藏已交换<small>交換済みを隠す / Hide traded</small></span></label><label className="group-filter"><select aria-label="筛选团体" value={groupFilter} onChange={e => setGroupFilter(e.target.value)}><option value="all">全部角色 / All</option>{characterGroups.map(group => <option key={group.id} value={group.id}>{group.name}</option>)}<option value="custom">其他 / Other</option></select><Icon name="down" size={15} /></label></div></div>}
       {demo && !display && <div className="demo-banner"><span><Icon name="image" size={16} />下面是示例商品。添加首件商品后，会自动替换示例。</span><mdui-button variant="text" disabled={busy || loading} onClick={() => { setGroupFilter('all'); void commit([]); }}>开始我的交换板<Icon name="arrow" slot="end-icon" size={17} /></mdui-button></div>}
-      {display && <div className="display-toolbar"><span>{demo ? '示例 / サンプル / DEMO' : 'あなたと交換したいもの / My trade board'}</span><IconButton aria-label="全屏展示 / Fullscreen" onClick={() => void fullscreen()}><Icon name="expand" /></IconButton></div>}
+      {display && <div className="display-toolbar"><span>{demo ? '示例 / サンプル / DEMO' : 'あなたと交換したいもの / My trade board'}</span><div className="display-toolbar-actions"><mdui-button variant="tonal" className="quick-add-trigger have" onClick={() => setQuickAddType(quickAddType === 'have' ? undefined : 'have')} disabled={loading}><Icon name="bag" slot="icon" />{quickAddType === 'have' ? '收起' : '快速添加 HAVE'}</mdui-button><mdui-button variant="tonal" className="quick-add-trigger want" onClick={() => setQuickAddType(quickAddType === 'want' ? undefined : 'want')} disabled={loading}><Icon name="heart" slot="icon" />{quickAddType === 'want' ? '收起' : '快速添加 WANT'}</mdui-button><IconButton aria-label="全屏展示 / Fullscreen" onClick={() => void fullscreen()}><Icon name="expand" /></IconButton></div></div>}
+      {display && quickAddType && <QuickAdd key={quickAddType} type={quickAddType} onSave={saveItem} busy={busy} />}
       <div className="trade-board" aria-busy={loading}>
         {(['have', 'want'] as const).map(type => {
           const allInSection = items.filter(item => item.type === type);
