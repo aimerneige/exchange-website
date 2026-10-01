@@ -35,6 +35,7 @@ export default function App() {
   const [quickAddType, setQuickAddType] = useState<TradeItem['type']>();
   const [previewId, setPreviewId] = useState<string>();
   const [deleteId, setDeleteId] = useState<string>();
+  const [adjustDeleteId, setAdjustDeleteId] = useState<string>();
   const [guide, setGuide] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -44,6 +45,7 @@ export default function App() {
   const switchRef = useRef<Switch>(null);
   const preview = items.find(item => item.id === previewId);
   const deleting = items.find(item => item.id === deleteId);
+  const adjustDeleting = items.find(item => item.id === adjustDeleteId);
 
   useEffect(() => {
     let active = true;
@@ -133,6 +135,17 @@ export default function App() {
     void commit(items.map(item => item.id === id ? { ...item, ...patch } : item));
   }
 
+  function adjustItem(id: string, delta: -1 | 1) {
+    const target = items.find(item => item.id === id);
+    if (!target) return;
+    const next = target.quantity + delta;
+    if (next <= 0) {
+      setAdjustDeleteId(id);
+      return;
+    }
+    patchItem(id, { quantity: Math.min(999, next) });
+  }
+
   function moveItem(item: TradeItem, direction: -1 | 1) {
     const sameType = items.filter(current => current.type === item.type);
     const target = sameType[sameType.findIndex(current => current.id === item.id) + direction];
@@ -195,7 +208,7 @@ export default function App() {
           return <section className={`board-section ${type}`} key={type} aria-label={type === 'have' ? '可换出 HAVE' : '想要 WANT'}>
             <div className="section-heading"><div className="section-title"><span className="section-symbol">{type === 'have' ? '譲' : '求'}</span><div><h2>{type === 'have' ? '可换出' : '想要'} <span>{type.toUpperCase()}</span><span className="section-count">{count(type)}</span></h2><p>{type === 'have' ? 'お譲りできます / Ready to trade' : '探しています / Looking for'}</p></div></div>{!display && <IconButton aria-label={type === 'have' ? '添加可换出商品' : '添加想要商品'} variant="tonal" disabled={loading || busy} onClick={() => addItem(type)}><Icon name="plus" size={19} /></IconButton>}</div>
             <div className="items-grid">
-              {loading ? <div className="empty-state"><Icon name="exchange" size={34} /><h3>正在打开交换板…</h3></div> : visible.map(item => <ItemCard key={item.id} item={item} display={display} demo={demo} busy={busy} first={allInSection[0]?.id === item.id} last={allInSection.at(-1)?.id === item.id} onPreview={() => setPreviewId(item.id)} onEdit={() => setEditor({ item, type })} onTrade={() => patchItem(item.id, { quantity: Math.max(0, item.quantity - 1), status: item.quantity <= 1 ? 'traded' : 'available' })} onToggle={() => patchItem(item.id, { status: item.status === 'traded' ? 'available' : 'traded', quantity: item.status === 'traded' ? Math.max(1, item.quantity) : item.quantity })} onMove={direction => moveItem(item, direction)} onDelete={() => setDeleteId(item.id)} />)}
+              {loading ? <div className="empty-state"><Icon name="exchange" size={34} /><h3>正在打开交换板…</h3></div> : visible.map(item => <ItemCard key={item.id} item={item} display={display} demo={demo} busy={busy} first={allInSection[0]?.id === item.id} last={allInSection.at(-1)?.id === item.id} onPreview={() => setPreviewId(item.id)} onEdit={() => setEditor({ item, type })} onTrade={() => patchItem(item.id, { quantity: Math.max(0, item.quantity - 1), status: item.quantity <= 1 ? 'traded' : 'available' })} onToggle={() => patchItem(item.id, { status: item.status === 'traded' ? 'available' : 'traded', quantity: item.status === 'traded' ? Math.max(1, item.quantity) : item.quantity })} onMove={direction => moveItem(item, direction)} onDelete={() => setDeleteId(item.id)} onAdjust={delta => adjustItem(item.id, delta)} />)}
               {!loading && visible.length === 0 && <div className="empty-state"><span className="empty-icon"><Icon name={type === 'have' ? 'bag' : 'heart'} size={34} /></span><h3>{allInSection.length ? '暂时没有符合条件的商品' : type === 'have' ? '分享你的那份喜欢' : '许一个小小的心愿'}</h3><p>{type === 'have' ? '添加你愿意交换的周边' : '添加你正在寻找的周边'}<br /><small>{type === 'have' ? '譲りたいもの / Add something to trade' : '欲しいもの / Add your wishlist'}</small></p>{!display && <mdui-button variant="outlined" onClick={() => addItem(type)} disabled={busy}><Icon name="plus" slot="icon" />{type === 'have' ? '添加可换出 / Add HAVE' : '添加想要 / Add WANT'}</mdui-button>}</div>}
             </div>
             {!display && <div className="section-footnote"><Icon name={type === 'have' ? 'bag' : 'heart'} size={14} />{type === 'have' ? '把多一份的喜欢，送到对的人手里。' : '下一份心动，也许就在这里。'}</div>}
@@ -209,6 +222,7 @@ export default function App() {
     {editor && <ItemEditor key={editor.item?.id ?? 'new'} {...editor} busy={busy} onClose={() => setEditor(undefined)} onSave={saveItem} />}
     {preview && <Modal title={preview.characterName} subtitle={preview.itemName || '周边 / グッズ / Merchandise'} onClose={() => setPreviewId(undefined)} className="preview-dialog"><button className={`preview-picture ${preview.status}`} onClick={() => setPreviewId(undefined)} aria-label="关闭大图 / Close image"><ItemImage item={preview} /></button><div className="preview-details"><span className={`preview-type ${preview.type}`}>{preview.type === 'have' ? '譲 / 可换出 / HAVE' : '求 / 想要 / WANT'}</span><strong>×{preview.quantity}</strong>{preview.status === 'traded' && <span className="preview-traded">交換済み / 已交换 / TRADED</span>}</div>{preview.note && <p className="preview-note">{preview.note}</p>}<p className="preview-hint">点击图片关闭 / タップして閉じる / Tap image to close</p>{!display && !demo && <div className="modal-actions"><mdui-button variant="tonal" onClick={() => { setEditor({ item: preview, type: preview.type }); setPreviewId(undefined); }}><Icon name="edit" slot="icon" />编辑商品 / Edit item</mdui-button></div>}</Modal>}
     {deleting && <Modal title="删除这件商品？" subtitle="商品を削除しますか？ / Delete this item?" onClose={() => setDeleteId(undefined)} className="delete-dialog"><p className="delete-description">{deleting.characterName} · {deleting.itemName}<br /><small>删除后无法恢复 / 削除は元に戻せません / This cannot be undone.</small></p><div className="modal-actions"><mdui-button variant="text" onClick={() => setDeleteId(undefined)}>取消 / Cancel</mdui-button><mdui-button className="danger-button" disabled={busy} onClick={async () => { if (await commit(items.filter(item => item.id !== deleting.id))) setDeleteId(undefined); }}>删除 / 削除 / Delete</mdui-button></div></Modal>}
+    {adjustDeleting && <Modal title="数量减至 0，确认删除？" subtitle="数量が0になりました。削除しますか？ / Delete item as quantity reached 0?" onClose={() => setAdjustDeleteId(undefined)} className="delete-dialog"><p className="delete-description">{adjustDeleting.characterName} · {adjustDeleting.itemName || '周边'}<br /><small>删除后无法恢复 / 削除は元に戻せません / This cannot be undone.</small></p><div className="modal-actions"><mdui-button variant="text" onClick={() => setAdjustDeleteId(undefined)}>取消 / Cancel</mdui-button><mdui-button className="danger-button" disabled={busy} onClick={async () => { if (await commit(items.filter(item => item.id !== adjustDeleting.id))) setAdjustDeleteId(undefined); }}>删除商品 / Delete</mdui-button></div></Modal>}
     {guide && <Modal title="把喜欢，交换给彼此" subtitle="使い方 / A little guide to trading" onClose={() => setGuide(false)} className="guide-dialog"><div className="guide-steps">{[
       ['01', '添加你的商品', '上传实物照片，或选择默认角色图。填写名称和数量，放入可换出或想要。', '商品を追加 / Add your items'],
       ['02', '打开现场展示', '点「展示模式」，把手机或平板给对方看。点商品图片可以放大，现场指一指就懂。', '見せて、指さして / Show and point'],

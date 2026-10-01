@@ -339,6 +339,14 @@ mdui-text-field { width: 100%; --mdui-shape-corner-extra-small: 9px; }
 .quick-input:focus { outline: 2px solid var(--primary); outline-offset: -1px; border-color: var(--primary); }
 .quick-input::placeholder { color: var(--muted); }
 .quick-error { display: flex; align-items: center; gap: 6px; padding: 8px 10px; font-size: 11px; color: #b44b56; margin-top: 10px; background: color-mix(in srgb, #bb4b55 8%, var(--surface)); border-radius: 7px; }
+.display-stepper { border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; background: var(--page); border-radius: 0 0 12px 12px; }
+.display-step-btn { flex: 1; height: 38px; border: 0; background: none; display: grid; place-items: center; color: var(--ink); cursor: pointer; transition: background .12s, color .12s; }
+.display-step-btn:first-child { border-radius: 0 0 0 12px; }
+.display-step-btn:last-child { border-radius: 0 0 12px 0; }
+.display-step-btn:hover:not(:disabled) { background: var(--hero); color: var(--primary); }
+.display-step-btn:disabled { opacity: .3; cursor: default; }
+.display-step-qty { font-size: 13px; font-weight: 700; color: var(--primary); padding: 0 10px; user-select: none; }
+
 
 @media (min-width: 1500px) {
   .item-picture { aspect-ratio: .98; }

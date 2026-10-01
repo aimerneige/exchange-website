@@ -5,10 +5,11 @@ import Icon from './Icon';
 import ItemImage from './ItemImage';
 import { IconButton } from './AccessibleControls';
 
-export default function ItemCard({ item, display, demo, busy, first, last, onPreview, onEdit, onTrade, onToggle, onMove, onDelete }: {
+export default function ItemCard({ item, display, demo, busy, first, last, onPreview, onEdit, onTrade, onToggle, onMove, onDelete, onAdjust }: {
   item: TradeItem; display: boolean; demo: boolean; busy: boolean; first: boolean; last: boolean;
   onPreview: () => void; onEdit: () => void; onTrade: () => void; onToggle: () => void;
   onMove: (direction: -1 | 1) => void; onDelete: () => void;
+  onAdjust?: (delta: -1 | 1) => void;
 }) {
   const group = characterGroups.find(g => g.id === item.groupId);
   const character = group?.characters.find(c => c.id === item.characterId);
@@ -20,6 +21,11 @@ export default function ItemCard({ item, display, demo, busy, first, last, onPre
       {item.status === 'traded' && <span className="traded-overlay"><Icon name="check" size={22} /><strong>交換済み</strong><small>已交换 · TRADED</small></span>}
     </button>
     <div className="item-details"><div className="item-title-row"><h3>{item.characterName}</h3><span className="quantity">×{item.quantity}</span></div><p className="item-name">{item.itemName || '周边 / グッズ / Merchandise'}</p>{item.note && <p className="item-note">{item.note}</p>}</div>
+    {display && onAdjust && !demo && <div className="display-stepper">
+      <button className="display-step-btn" disabled={busy} onClick={() => onAdjust(-1)} aria-label={`减少 ${item.characterName} 数量`}><Icon name="minus" size={16} /></button>
+      <span className="display-step-qty">×{item.quantity}</span>
+      <button className="display-step-btn" disabled={busy || item.quantity >= 999} onClick={() => onAdjust(1)} aria-label={`增加 ${item.characterName} 数量`}><Icon name="plus" size={16} /></button>
+    </div>}
     {!display && !demo && <div className="card-actions">
       <IconButton aria-label={`编辑 ${item.characterName}`} disabled={busy} onClick={onEdit}><Icon name="edit" size={16} /></IconButton>
       <IconButton aria-label={`上移 ${item.characterName}`} disabled={busy || first} onClick={() => onMove(-1)}><Icon name="up" size={16} /></IconButton>
