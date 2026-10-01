@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { TradeItem } from '../types';
 import Icon from './Icon';
+import { resolveCharacterImage } from '../data/characters';
 
 export default function ItemImage({ item, className = '' }: { item: Pick<TradeItem, 'image' | 'photo' | 'characterName'>; className?: string }) {
-  const [source, setSource] = useState(item.image);
+  const [source, setSource] = useState(() => resolveCharacterImage(item.image));
   const [failed, setFailed] = useState(false);
   useEffect(() => {
-    const url = item.photo ? URL.createObjectURL(item.photo) : item.image;
+    const url = item.photo ? URL.createObjectURL(item.photo) : resolveCharacterImage(item.image);
     setSource(url);
     setFailed(false);
     return () => { if (item.photo) URL.revokeObjectURL(url); };

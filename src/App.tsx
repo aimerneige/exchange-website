@@ -82,13 +82,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!offlineReady) return;
-    navigator.serviceWorker.ready.then(registration => registration.active?.postMessage({
-      type: 'CACHE_IMAGES', urls: items.filter(item => !item.photo).map(item => item.image),
-    })).catch(() => setServiceWorkerError(true));
-  }, [offlineReady, items]);
-
-  useEffect(() => {
     const control = switchRef.current;
     if (!control) return;
     control.updateComplete.then(() => control.shadowRoot?.querySelector('input')?.setAttribute('aria-label', '隐藏已交换 / 交換済みを隠す / Hide traded'));
@@ -216,7 +209,7 @@ export default function App() {
       ['01', '添加你的商品', '上传实物照片，或选择默认角色图。填写名称和数量，放入可换出或想要。', '商品を追加 / Add your items'],
       ['02', '打开现场展示', '点「展示模式」，把手机或平板给对方看。点商品图片可以放大，现场指一指就懂。', '見せて、指さして / Show and point'],
       ['03', '记录这一份小小的快乐', '退出展示后，点「−」交换一件。数量为 0 时自动标记已交换，也可手动标记。', '交換したら更新 / Update after trading'],
-    ].map(([n, title, text, subtitle]) => <div className="guide-step" key={n}><span>{n}</span><div><h3>{title}</h3><small>{subtitle}</small><p>{text}</p></div></div>)}</div><div className="guide-storage"><Icon name="shield" /><div><strong>数据仅在此浏览器保存 / この端末のみ / Device only</strong><p>清除网站数据、使用隐私模式或换设备可能丢失交换板。首次联网打开构建版并完成缓存后，可离线使用；默认角色图需先联网加载，外部图源不可用时显示角色名称。可以通过浏览器「添加到主屏幕」安装。</p></div></div><div className="guide-storage"><Icon name="info" /><div><strong>非官方 · 非商业 / Unofficial · Noncommercial</strong><p>本站与 LoveLive! 官方无关。角色图片来源于 LoveLive! 官方网站，权利属于各自权利人。默认图仅代表角色，建议上传实物照片说明实际交换商品。</p></div></div><div className="modal-actions"><mdui-button onClick={() => setGuide(false)}>知道了 / わかりました / Got it</mdui-button></div></Modal>}
+    ].map(([n, title, text, subtitle]) => <div className="guide-step" key={n}><span>{n}</span><div><h3>{title}</h3><small>{subtitle}</small><p>{text}</p></div></div>)}</div><div className="guide-storage"><Icon name="shield" /><div><strong>数据仅在此浏览器保存 / この端末のみ / Device only</strong><p>清除网站数据、使用隐私模式或换设备可能丢失交换板。首次联网打开构建版并完成缓存后，可离线使用，全部默认角色图也可离线查看。可以通过浏览器「添加到主屏幕」安装。</p></div></div><div className="guide-storage"><Icon name="info" /><div><strong>非官方 · 非商业 / Unofficial · Noncommercial</strong><p>本站与 LoveLive! 官方无关。角色图片来源于 LoveLive! 官方网站，权利属于各自权利人。默认图仅代表角色，建议上传实物照片说明实际交换商品。</p></div></div><div className="modal-actions"><mdui-button onClick={() => setGuide(false)}>知道了 / わかりました / Got it</mdui-button></div></Modal>}
     {notice && <div className="toast" role="status"><Icon name="check" size={17} />{notice}</div>}
   </div>;
 }
