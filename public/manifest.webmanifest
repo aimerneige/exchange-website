@@ -1,0 +1,12 @@
+{
+  "name": "交换小站 · Exchange",
+  "short_name": "交换小站",
+  "description": "本机保存、三语展示的现场周边交换工具",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#557c72",
+  "icons": [{ "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
