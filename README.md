@@ -67,7 +67,7 @@ Service Worker 需要 HTTPS，localhost 可用于测试。更新部署后，关�
 
 将新增图片放入对应的 `public/characters/` 目录，使用以 `./characters/` 开头的相对地址。重新构建后，编辑器、团体筛选和 Service Worker 的预缓存图片清单会自动读取此配置。图片内容变化也会更新离线缓存版本；缺少配置中的文件会导致构建失败，避免发布不完整资源。无需改变页面组件。默认角色名称允许修改，用户也可上传其他 IP 的照片并自行填写名称。
 
-默认角色图从 LoveLive! 官方网站抓取提取，统一使用高分辨率 WebP 格式（640×840），保留原始命名与透明通道。包含 μ’s (`public/characters/muse/o01.webp` ～ `o09.webp`)、Aqours (`public/characters/aqours/u01.webp` ～ `u09.webp`)、虹ヶ咲 (`public/characters/nijigasaki/n01.webp` ～ `n13.webp`)、Liella! (`public/characters/liella/y01.webp` ～ `y11.webp`)、蓮ノ空 (`public/characters/hasunosora/h01.webp` ～ `h11.webp`) 以及 イキヅライブ！ (`public/characters/ikizulive/bb01.webp` ～ `bb10.webp`)。
+默认角色图从 LoveLive! 官方网站抓取提取，统一使用高分辨率 WebP 格式（640×840），保留原始命名与透明通道。包含 μ’s (`public/characters/muse/o01.webp` ～ `o09.webp`)、Aqours (`public/characters/aqours/u01.webp` ～ `u09.webp`)、虹ヶ咲 (`public/characters/nijigasaki/n01.webp` ～ `n13.webp`)、Liella! (`public/characters/liella/y01.webp` ～ `y11.webp`)、蓮ノ空 (`public/characters/hasunosora/h01.webp` ～ `h11.webp`)、イキヅライブ！ (`public/characters/ikizulive/bb01.webp` ～ `bb10.webp`)、スクールアイドルミュージカル (`public/characters/musical/m01.webp` ～ `m10.webp`) 以及 幻日のヨハネ (`public/characters/yohane/yohane01.webp` ～ `yohane10.webp`)。
 
 图片原始来源为 LoveLive! 官方网站。角色图只表示角色，不代表具体商品。版权归各自权利人所有，非官方声明不等于素材授权。页面加载默认图时只请求本站资源。
 

@@ -211,6 +211,10 @@ test('all bundled character images are available before opening the editor offli
   await checkCharacters('hasunosora', 11);
   await page.locator('mdui-chip').filter({ hasText: 'イキヅライブ！' }).click();
   await checkCharacters('ikizulive', 10);
+  await page.locator('mdui-chip').filter({ hasText: 'スクールアイドルミュージカル' }).click();
+  await checkCharacters('musical', 10);
+  await page.locator('mdui-chip').filter({ hasText: '幻日のヨハネ' }).click();
+  await checkCharacters('yohane', 10);
   await page.locator('mdui-chip').filter({ hasText: 'Aqours' }).click();
   await page.getByRole('button', { name: '选择 高海千歌', exact: true }).click();
   await button(page, '保存 / 保存 / Save').click();

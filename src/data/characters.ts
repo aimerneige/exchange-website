@@ -52,6 +52,22 @@ const ikizuliveNames = [
   ['midori', '山田 真緑', '#007b43'], ['shion', '佐々木翔音', '#b44c97'],
 ];
 
+const musicalNames = [
+  ['rurika', '椿 ルリカ', '#73b8e2'], ['yuzuha', '皇 ユズハ', '#8a9ba8'],
+  ['yukino', '北条ユキノ', '#f58220'], ['hikaru', '天草ヒカル', '#3c6854'],
+  ['maya', '三笠マーヤ', '#e48898'], ['anzu', '滝沢アンズ', '#d81f35'],
+  ['misuzu', '若槻ミスズ', '#004c71'], ['toa', '来栖トア', '#ff8c90'],
+  ['rena', '鈴賀レナ', '#abc900'], ['sayaka', '晴風サヤカ', '#ffee50'],
+];
+
+const yohaneNames = [
+  ['yohane', 'ヨハネ', '#9991b6'], ['lailaps', 'ライラプス', '#8e9aaf'],
+  ['hanamaru', 'ハナマル', '#d8b775'], ['dia', 'ダイヤ', '#d68083'],
+  ['ruby', 'ルビィ', '#d98fab'], ['chika', 'チカ', '#efa276'],
+  ['you', 'ヨウ', '#7bb8d3'], ['kanan', 'カナン', '#76bfb5'],
+  ['rico', 'リコ', '#d58a9e'], ['mari', 'マリ', '#b29ac9'],
+];
+
 export const characterGroups: CharacterGroup[] = [
   {
     id: 'muse', franchise: 'LoveLive!', name: 'μ’s',
@@ -93,6 +109,20 @@ export const characterGroups: CharacterGroup[] = [
     characters: ikizuliveNames.map(([id, name, color], i) => ({
       id, name, color,
       image: `./characters/ikizulive/bb${String(i + 1).padStart(2, '0')}.webp`,
+    })),
+  },
+  {
+    id: 'musical', franchise: 'LoveLive!', name: 'スクールアイドルミュージカル',
+    characters: musicalNames.map(([id, name, color], i) => ({
+      id, name, color,
+      image: `./characters/musical/m${String(i + 1).padStart(2, '0')}.webp`,
+    })),
+  },
+  {
+    id: 'yohane', franchise: 'LoveLive!', name: '幻日のヨハネ',
+    characters: yohaneNames.map(([id, name, color], i) => ({
+      id, name, color,
+      image: `./characters/yohane/yohane${String(i + 1).padStart(2, '0')}.webp`,
     })),
   },
 ];
