@@ -164,7 +164,7 @@ export default function App() {
   return <div className={`app ${display ? 'display-mode' : ''}`}>
     <header className="app-header">
       <a href="./" className="brand" aria-label="交换小站首页"><span className="brand-icon"><Icon name="exchange" size={25} /></span><span>交换小站<small>EXCHANGE</small></span></a>
-      {!display && <nav className="header-nav" aria-label="主导航"><button className="active" onClick={() => setGuide(false)}>我的交换板<small>マイボード / My board</small></button><button onClick={() => setGuide(true)}>使用指南<small>使い方 / How to use</small></button></nav>}
+      {!display && <nav className="header-nav" aria-label="主导航"><button className={!guide ? 'active' : ''} onClick={() => setGuide(false)}>我的交换板<small>マイボード / My board</small></button><button className={guide ? 'active' : ''} onClick={() => setGuide(true)}>使用指南<small>使い方 / How to use</small></button></nav>}
       <div className="header-tools">
         <span className="save-state"><span className={`status-dot ${!online ? 'offline' : ''}`} />{loading ? '正在读取' : busy ? '正在保存' : !online ? '离线使用中' : demo ? '本地保存 · 无需登录' : '已保存至本机'}</span>
         {!display && <><IconButton aria-label={theme === 'light' ? '切换暗色主题' : '切换亮色主题'} title="亮色 / 暗色 · Light / Dark" onClick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}><Icon name={theme === 'light' ? 'moon' : 'sun'} /></IconButton><a className="github-link" href="https://github.com/aimerneige/exchange-website" target="_blank" rel="noreferrer" aria-label="GitHub 代码仓库" title="GitHub 代码仓库"><Icon name="github" size={21} /></a></>}

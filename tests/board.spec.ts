@@ -75,6 +75,7 @@ test('uploaded image persists and board remains editable after offline reload', 
   });
   const png = Buffer.from(imageData, 'base64');
   await page.locator('input[type=file]').setInputFiles({ name: 'badge.png', mimeType: 'image/png', buffer: png });
+  await button(page, '确认裁切 / Crop').click();
   await expect(page.locator('.editor-preview img')).toBeVisible();
   await field(page, '角色名称').fill('后藤ひとり');
   await field(page, '商品名称').fill('自定义徽章');

@@ -12,7 +12,8 @@
   "dependencies": {
     "mdui": "^2.1.5",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "react-image-crop": "^11.1.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
