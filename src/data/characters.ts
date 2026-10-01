@@ -27,26 +27,11 @@ export const characterGroups: CharacterGroup[] = [
     id: 'aqours', franchise: 'LoveLive!', name: 'Aqours',
     characters: aqoursNames.map(([id, name, color], i) => ({
       id, name, color,
-      image: `./characters/aqours/thumb${String(i + 1).padStart(2, '0')}.png`,
+      image: `./characters/aqours/u${String(i + 1).padStart(2, '0')}.webp`,
     })),
   },
 ];
 
-const legacyImagePrefixes: Record<string, string> = {
-  muse: 'https://www.lovelive-anime.jp/otonokizaka/member/member_top.hyperesources/member',
-  aqours: 'https://www.lovelive-anime.jp/uranohoshi/img/member/thumb',
-};
-const legacyImages = new Map<string, string>(characterGroups.flatMap(group => {
-  const prefix = legacyImagePrefixes[group.id];
-  return prefix ? group.characters.map((character, i) => [
-    `${prefix}${String(i + 1).padStart(2, '0')}.png`, character.image,
-  ] as const) : [];
-}));
-
-export function resolveCharacterImage(image: string): string {
-  // 旧交换板保留原始数据，只在显示时将已知默认外链映射到本地资源。
-  return legacyImages.get(image) ?? image;
-}
 
 const examples = [
   ['muse', 'honoka', 'have', '缶バッジ / 徽章', 2],

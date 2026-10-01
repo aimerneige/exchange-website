@@ -206,45 +206,7 @@ test('all bundled character images are available before opening the editor offli
   await button(page, '保存 / 保存 / Save').click();
   await expect(page.locator('mdui-dialog')).toHaveCount(0);
   await expect(page.locator('.item-title-row h3')).toHaveText('高海千歌');
-  await expect.poll(() => page.locator('.item-picture img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBe(86);
+  await expect.poll(() => page.locator('.item-picture img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBe(640);
   expect(externalImages).toEqual([]);
 });
 
-test('existing boards with official image URLs display local images without external requests', async ({ page }) => {
-  await openBoard(page);
-  const externalImages: string[] = [];
-  page.on('request', request => {
-    if (request.url().startsWith('https://www.lovelive-anime.jp/')) externalImages.push(request.url());
-  });
-  await page.evaluate(() => new Promise<void>((resolve, reject) => {
-    const request = indexedDB.open('exchange-board', 1);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      const database = request.result;
-      const transaction = database.transaction('board', 'readwrite');
-      transaction.objectStore('board').put([
-        {
-          id: 'old-muse', groupId: 'muse', characterId: 'honoka', characterName: '高坂穂乃果',
-          image: 'https://www.lovelive-anime.jp/otonokizaka/member/member_top.hyperesources/member01.png',
-          type: 'have', quantity: 2, status: 'available', itemName: '原有徽章', note: '原有备注',
-        },
-        {
-          id: 'old-aqours', groupId: 'aqours', characterId: 'chika', characterName: '高海千歌',
-          image: 'https://www.lovelive-anime.jp/uranohoshi/img/member/thumb01.png',
-          type: 'want', quantity: 1, status: 'available', itemName: '原有立牌', note: '',
-        },
-      ], 'items');
-      transaction.oncomplete = () => { database.close(); resolve(); };
-      transaction.onerror = () => { database.close(); reject(transaction.error); };
-    };
-  }));
-  await page.reload();
-  await expect(page.locator('.have .item-title-row h3')).toHaveText('高坂穂乃果');
-  await expect(page.locator('.want .item-title-row h3')).toHaveText('高海千歌');
-  await expect(page.getByText('原有备注', { exact: true })).toBeVisible();
-  await expect(page.locator('.have .quantity')).toHaveText('×2');
-  await expect.poll(() => page.locator('.item-picture img').evaluateAll(images =>
-    images.length === 2 && images.every(image => (image as HTMLImageElement).naturalWidth > 0 && (image as HTMLImageElement).src.includes('/characters/')),
-  )).toBe(true);
-  expect(externalImages).toEqual([]);
-});

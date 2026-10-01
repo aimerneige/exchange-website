@@ -67,9 +67,9 @@ Service Worker 需要 HTTPS，localhost 可用于测试。更新部署后，关�
 
 将新增图片放入对应的 `public/characters/` 目录，使用以 `./characters/` 开头的相对地址。重新构建后，编辑器、团体筛选和 Service Worker 的预缓存图片清单会自动读取此配置。图片内容变化也会更新离线缓存版本；缺少配置中的文件会导致构建失败，避免发布不完整资源。无需改变页面组件。默认角色名称允许修改，用户也可上传其他 IP 的照片并自行填写名称。
 
-默认角色图从用户提供的 `muse.zip` 与 `aqours.zip` 提取，保留原始 PNG、尺寸与文件名，排除 `__MACOSX` 元数据。文件路径为 `public/characters/muse/member01.png` 至 `member09.png`，以及 `public/characters/aqours/thumb01.png` 至 `thumb09.png`，按用户提供的顺序对应角色。
+默认角色图从素材包提取，保留原始尺寸与文件名，排除 `__MACOSX` 元数据。文件路径为 `public/characters/muse/member01.png` 至 `member09.png`，以及 `public/characters/aqours/u01.webp` 至 `u09.webp`，按用户提供的顺序对应角色。
 
-图片原始来源为 LoveLive! 官方网站的 `otonokizaka/member/member_top.hyperesources/` 与 `uranohoshi/img/member/` 路径。角色图只表示角色，不代表具体商品。版权归各自权利人所有，非官方声明不等于素材授权。页面加载默认图时只请求本站资源；旧交换板保存的已知官方图片地址会在显示时自动映射至本地图片，保留商品与上传照片。
+图片原始来源为 LoveLive! 官方网站。角色图只表示角色，不代表具体商品。版权归各自权利人所有，非官方声明不等于素材授权。页面加载默认图时只请求本站资源。
 
 ## 数据与隐私
 
