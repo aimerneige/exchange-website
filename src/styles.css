@@ -347,6 +347,28 @@ mdui-text-field { width: 100%; --mdui-shape-corner-extra-small: 9px; }
 .display-step-btn:disabled { opacity: .3; cursor: default; }
 .display-step-qty { font-size: 13px; font-weight: 700; color: var(--primary); padding: 0 10px; user-select: none; }
 
+.site-qr-card { margin-top: 20px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); display: flex; align-items: center; gap: 22px; }
+.qr-image-wrap { width: 112px; height: 112px; min-width: 112px; background: #ffffff; padding: 8px; border-radius: 12px; border: 1px solid var(--line); box-shadow: 0 4px 14px #0000000d; display: grid; place-items: center; cursor: pointer; transition: transform .15s ease; }
+.qr-image-wrap:hover { transform: scale(1.03); }
+.qr-code-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.qr-info { flex: 1; min-width: 0; }
+.qr-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 650; color: var(--ink); }
+.qr-title svg { color: var(--primary); }
+.qr-title small { font-size: 10px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+.qr-url { font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 4px; letter-spacing: .2px; }
+.qr-desc { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+.qr-desc small { display: block; font-size: 9px; margin-top: 2px; }
+.qr-actions { margin-top: 13px; display: flex; gap: 10px; flex-wrap: wrap; }
+.qr-actions mdui-button { height: 36px; font-size: 11px; }
+
+.qr-dialog::part(panel) { max-width: 460px; }
+.modal-qr-container { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 5px 0; }
+.modal-qr-frame { background: #ffffff; padding: 20px; border-radius: 18px; border: 1px solid #e2e8e4; box-shadow: 0 10px 30px #00000014; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.modal-qr-img { width: 200px; height: 200px; object-fit: contain; display: block; }
+.modal-qr-badge { font-size: 12px; font-weight: 650; color: #303b37; background: #edf5f1; padding: 5px 14px; border-radius: 8px; letter-spacing: .3px; }
+.modal-qr-tip { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.7; }
+.modal-qr-tip small { font-size: 10px; }
+
 
 @media (min-width: 1500px) {
   .item-picture { aspect-ratio: .98; }
@@ -477,6 +499,9 @@ mdui-text-field { width: 100%; --mdui-shape-corner-extra-small: 9px; }
   .quick-quantity-row { gap: 10px; padding: 10px 10px; }
   .quick-preview-mini { width: 40px; height: 40px; }
   .quick-extra-row { flex-direction: column; gap: 10px; }
+  .site-qr-card { flex-direction: column; align-items: center; text-align: center; padding: 18px 15px; gap: 14px; }
+  .qr-title { justify-content: center; }
+  .qr-actions { justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; }

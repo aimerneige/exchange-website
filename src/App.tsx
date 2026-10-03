@@ -37,12 +37,37 @@ export default function App() {
   const [deleteId, setDeleteId] = useState<string>();
   const [adjustDeleteId, setAdjustDeleteId] = useState<string>();
   const [guide, setGuide] = useState(false);
+  const [qrModal, setQrModal] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [online, setOnline] = useState(navigator.onLine);
   const [offlineReady, setOfflineReady] = useState(false);
   const [serviceWorkerError, setServiceWorkerError] = useState(false);
   const switchRef = useRef<Switch>(null);
+
+  async function copySiteLink() {
+    const url = 'https://exchange.lovelive.moe/';
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+      setNotice('已复制网址 / リンクをコピーしました / Link copied');
+    } catch {
+      setNotice('复制失败，请手动复制网址 / Please copy manually');
+    }
+  }
   const preview = items.find(item => item.id === previewId);
   const deleting = items.find(item => item.id === deleteId);
   const adjustDeleting = items.find(item => item.id === adjustDeleteId);
@@ -183,8 +208,8 @@ export default function App() {
       {!display && <nav className="header-nav" aria-label="主导航"><button className={!guide ? 'active' : ''} onClick={() => setGuide(false)}>我的交换板<small>マイボード / My board</small></button><button className={guide ? 'active' : ''} onClick={() => setGuide(true)}>使用指南<small>使い方 / How to use</small></button></nav>}
       <div className="header-tools">
         <span className="save-state"><span className={`status-dot ${!online ? 'offline' : ''}`} />{loading ? '正在读取' : busy ? '正在保存' : !online ? '离线使用中' : demo ? '本地保存 · 无需登录' : '已保存至本机'}</span>
-        {!display && <><IconButton aria-label={theme === 'light' ? '切换暗色主题' : '切换亮色主题'} title="亮色 / 暗色 · Light / Dark" onClick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}><Icon name={theme === 'light' ? 'moon' : 'sun'} /></IconButton><a className="github-link" href="https://github.com/aimerneige/exchange-website" target="_blank" rel="noreferrer" aria-label="GitHub 代码仓库" title="GitHub 代码仓库"><Icon name="github" size={21} /></a></>}
-        {display && <IconButton className="exit-display" aria-label="退出展示 / 編集に戻る / Exit display" onClick={() => void leaveDisplay()}><Icon name="edit" /></IconButton>}
+        {!display && <><IconButton aria-label="扫码访问本站" title="扫码访问本站 · QR Code" onClick={() => setQrModal(true)}><Icon name="qr" /></IconButton><IconButton aria-label={theme === 'light' ? '切换暗色主题' : '切换亮色主题'} title="亮色 / 暗色 · Light / Dark" onClick={() => updateTheme(theme === 'light' ? 'dark' : 'light')}><Icon name={theme === 'light' ? 'moon' : 'sun'} /></IconButton><a className="github-link" href="https://github.com/aimerneige/exchange-website" target="_blank" rel="noreferrer" aria-label="GitHub 代码仓库" title="GitHub 代码仓库"><Icon name="github" size={21} /></a></>}
+        {display && <><IconButton aria-label="本站二维码" title="本站二维码 · QR Code" onClick={() => setQrModal(true)}><Icon name="qr" /></IconButton><IconButton className="exit-display" aria-label="退出展示 / 編集に戻る / Exit display" onClick={() => void leaveDisplay()}><Icon name="edit" /></IconButton></>}
       </div>
     </header>
     <main className="main-content">
@@ -199,7 +224,7 @@ export default function App() {
       {error && <div className="error-banner" role="alert"><Icon name="info" /><span>{error}</span><IconButton aria-label="关闭错误提示" onClick={() => setError('')}><Icon name="close" size={18} /></IconButton></div>}
       {!display && <div className="board-toolbar"><div className="board-heading"><h2>我的交换板{demo && <span className="demo-tag">示例预览</span>}</h2><p>譲りたいもの、探しているもの。 <span>Your trade wishlist, at a glance.</span></p></div><div className="board-filters"><label className="filter-switch"><mdui-switch ref={switchRef} checked={hideTraded} aria-label="隐藏已交换" /><span>隐藏已交换<small>交換済みを隠す / Hide traded</small></span></label><label className="group-filter"><select aria-label="筛选团体" value={groupFilter} onChange={e => setGroupFilter(e.target.value)}><option value="all">全部角色 / All</option>{characterGroups.map(group => <option key={group.id} value={group.id}>{group.name}</option>)}<option value="custom">其他 / Other</option></select><Icon name="down" size={15} /></label></div></div>}
       {demo && !display && <div className="demo-banner"><span><Icon name="image" size={16} />下面是示例商品。添加首件商品后，会自动替换示例。</span><mdui-button variant="text" disabled={busy || loading} onClick={() => { setGroupFilter('all'); void commit([]); }}>开始我的交换板<Icon name="arrow" slot="end-icon" size={17} /></mdui-button></div>}
-      {display && <div className="display-toolbar"><span>{demo ? '示例 / サンプル / DEMO' : 'あなたと交換したいもの / My trade board'}</span><div className="display-toolbar-actions"><mdui-button variant="tonal" className="quick-add-trigger have" onClick={() => setQuickAddType(quickAddType === 'have' ? undefined : 'have')} disabled={loading}><Icon name="bag" slot="icon" />{quickAddType === 'have' ? '收起' : '快速添加 HAVE'}</mdui-button><mdui-button variant="tonal" className="quick-add-trigger want" onClick={() => setQuickAddType(quickAddType === 'want' ? undefined : 'want')} disabled={loading}><Icon name="heart" slot="icon" />{quickAddType === 'want' ? '收起' : '快速添加 WANT'}</mdui-button><IconButton aria-label="全屏展示 / Fullscreen" onClick={() => void fullscreen()}><Icon name="expand" /></IconButton></div></div>}
+      {display && <div className="display-toolbar"><span>{demo ? '示例 / サンプル / DEMO' : 'あなたと交換したいもの / My trade board'}</span><div className="display-toolbar-actions"><mdui-button variant="tonal" className="quick-add-trigger have" onClick={() => setQuickAddType(quickAddType === 'have' ? undefined : 'have')} disabled={loading}><Icon name="bag" slot="icon" />{quickAddType === 'have' ? '收起' : '快速添加 HAVE'}</mdui-button><mdui-button variant="tonal" className="quick-add-trigger want" onClick={() => setQuickAddType(quickAddType === 'want' ? undefined : 'want')} disabled={loading}><Icon name="heart" slot="icon" />{quickAddType === 'want' ? '收起' : '快速添加 WANT'}</mdui-button><mdui-button variant="tonal" className="quick-add-trigger" onClick={() => setQrModal(true)}><Icon name="qr" slot="icon" />二维码 / QR</mdui-button><IconButton aria-label="全屏展示 / Fullscreen" onClick={() => void fullscreen()}><Icon name="expand" /></IconButton></div></div>}
       {display && quickAddType && <QuickAdd key={quickAddType} type={quickAddType} onSave={saveItem} busy={busy} />}
       <div className="trade-board" aria-busy={loading}>
         {(['have', 'want'] as const).map(type => {
@@ -217,6 +242,20 @@ export default function App() {
       </div>
       <div className="point-note"><span className="point-hand">☞</span><p><strong lang="ja">指さしてください</strong><span>请直接指出来 · Please point to the item</span></p><span className="point-thanks">ありがとうございます！<small>谢谢！ / Thank you!</small></span></div>
       {!display && <div className="local-note"><Icon name="shield" size={17} /><p>你的交换板，只属于你。<span>商品和上传图片仅保存在此浏览器，不会上传至服务器。<br className="mobile-break" /> この端末のみ / Stored on this device only.</span></p><span className="offline-status"><Icon name="wifi" size={15} />{serviceWorkerError ? '离线缓存不可用' : offlineReady ? '已支持离线使用' : import.meta.env.DEV ? '离线功能在构建版可用' : '正在准备离线使用'}</span></div>}
+      {!display && <div className="site-qr-card">
+        <div className="qr-image-wrap" onClick={() => setQrModal(true)} title="点击放大二维码 / Tap to enlarge">
+          <img src={`${import.meta.env.BASE_URL}qr-code.svg`} alt="https://exchange.lovelive.moe/ 二维码" className="qr-code-img" />
+        </div>
+        <div className="qr-info">
+          <div className="qr-title"><Icon name="qr" size={18} /><span>扫码访问本站 <small>/ 携帯でアクセス / Scan QR Code</small></span></div>
+          <div className="qr-url">https://exchange.lovelive.moe/</div>
+          <p className="qr-desc">在手机扫描二维码或分享链接，快速开启属于你的周边交换板。<small>スマホのカメラ等でかざすと、すぐに本サイトにアクセスできます。</small></p>
+          <div className="qr-actions">
+            <mdui-button variant="tonal" className="copy-link-btn" onClick={() => void copySiteLink()}><Icon name="copy" slot="icon" />{copied ? '已复制网址 / Copied' : '复制网址 / Copy link'}</mdui-button>
+            <mdui-button variant="outlined" className="copy-link-btn" onClick={() => setQrModal(true)}><Icon name="expand" slot="icon" />放大二维码 / Enlarge</mdui-button>
+          </div>
+        </div>
+      </div>}
     </main>
     <footer className="app-footer"><span>交换小站 <span className="footer-dot">·</span> 让喜欢，遇见喜欢。</span><span>Made for fans, with <Icon name="heart" size={12} /><span className="footer-dot">·</span> 非商业同好工具</span></footer>
     {editor && <ItemEditor key={editor.item?.id ?? 'new'} {...editor} busy={busy} onClose={() => setEditor(undefined)} onSave={saveItem} />}
@@ -227,7 +266,20 @@ export default function App() {
       ['01', '添加你的商品', '上传实物照片，或选择默认角色图。填写名称和数量，放入可换出或想要。', '商品を追加 / Add your items'],
       ['02', '打开现场展示', '点「展示模式」，把手机或平板给对方看。点商品图片可以放大，现场指一指就懂。', '見せて、指さして / Show and point'],
       ['03', '记录这一份小小的快乐', '退出展示后，点「−」交换一件。数量为 0 时自动标记已交换，也可手动标记。', '交換したら更新 / Update after trading'],
-    ].map(([n, title, text, subtitle]) => <div className="guide-step" key={n}><span>{n}</span><div><h3>{title}</h3><small>{subtitle}</small><p>{text}</p></div></div>)}</div><div className="guide-storage"><Icon name="shield" /><div><strong>数据仅在此浏览器保存 / この端末のみ / Device only</strong><p>清除网站数据、使用隐私模式或换设备可能丢失交换板。首次联网打开构建版并完成缓存后，可离线使用，全部默认角色图也可离线查看。可以通过浏览器「添加到主屏幕」安装。</p></div></div><div className="guide-storage"><Icon name="info" /><div><strong>非官方 · 非商业 / Unofficial · Noncommercial</strong><p>本站与 LoveLive! 官方无关。角色图片来源于 LoveLive! 官方网站，权利属于各自权利人。默认图仅代表角色，建议上传实物照片说明实际交换商品。</p></div></div><div className="modal-actions"><mdui-button onClick={() => setGuide(false)}>知道了 / わかりました / Got it</mdui-button></div></Modal>}
+    ].map(([n, title, text, subtitle]) => <div className="guide-step" key={n}><span>{n}</span><div><h3>{title}</h3><small>{subtitle}</small><p>{text}</p></div></div>)}</div><div className="guide-storage"><Icon name="shield" /><div><strong>数据仅在此浏览器保存 / この端末のみ / Device only</strong><p>清除网站数据、使用隐私模式或换设备可能丢失交换板。首次联网打开构建版并完成缓存后，可离线使用，全部默认角色图也可离线查看。可以通过浏览器「添加到主屏幕」安装。</p></div></div><div className="guide-storage"><Icon name="qr" /><div><strong>网址与二维码 / URL & QR Code</strong><p>本站网址为 <strong>https://exchange.lovelive.moe/</strong>。可随时点击右上角或页脚二维码，方便现场其他同好用手机扫码访问。</p></div></div><div className="guide-storage"><Icon name="info" /><div><strong>非官方 · 非商业 / Unofficial · Noncommercial</strong><p>本站与 LoveLive! 官方无关。角色图片来源于 LoveLive! 官方网站，权利属于各自权利人。默认图仅代表角色，建议上传实物照片说明实际交换商品。</p></div></div><div className="modal-actions"><mdui-button onClick={() => setGuide(false)}>知道了 / わかりました / Got it</mdui-button></div></Modal>}
+    {qrModal && <Modal title="扫码访问本站" subtitle="携帯でアクセス / Scan QR Code to visit" onClose={() => setQrModal(false)} className="qr-dialog">
+      <div className="modal-qr-container">
+        <div className="modal-qr-frame">
+          <img src={`${import.meta.env.BASE_URL}qr-code.svg`} alt="https://exchange.lovelive.moe/ 二维码" className="modal-qr-img" />
+          <span className="modal-qr-badge">https://exchange.lovelive.moe/</span>
+        </div>
+        <p className="modal-qr-tip">使用微信、相机或浏览器扫描二维码，直接打开交换小站。<br /><small>カメラや LINE 等で読み込むと、すぐに交換小站を開けます。</small></p>
+        <div className="modal-actions">
+          <mdui-button variant="tonal" onClick={() => void copySiteLink()}><Icon name="copy" slot="icon" />{copied ? '已复制网址 / Copied' : '复制网址 / Copy link'}</mdui-button>
+          <mdui-button onClick={() => setQrModal(false)}>关闭 / 閉じる / Close</mdui-button>
+        </div>
+      </div>
+    </Modal>}
     {notice && <div className="toast" role="status"><Icon name="check" size={17} />{notice}</div>}
   </div>;
 }

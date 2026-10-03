@@ -20,6 +20,8 @@ const paths = {
   bag: 'M5 7h14l2 14H3L5 7Zm3 1V6a4 4 0 0 1 8 0v2',
   wifi: 'M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0m-11 4a6 6 0 0 1 8 0m-4 4h.01',
   info: 'M12 11v6m0-10h.01M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
+  copy: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2M8 16h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z',
+  qr: 'M3 3h6v6H3V3zm12 0h6v6h-6V3ZM3 15h6v6H3v-6zm11 0h3v3h-3v-3zm4 0h3v7h-3v-7zm-4 4h3v3h-3v-3zm-12-12h.01M18 6h.01M6 18h.01',
 };
 
 export type IconName = keyof typeof paths | 'github';
